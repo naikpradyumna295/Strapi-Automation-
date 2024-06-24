@@ -24,14 +24,12 @@ jobs:
         run: |
           rsync -avz -e "ssh -o StrictHostKeyChecking=no" --exclude=node_modules . ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:~/app
 
-      - name: Install dependencies and PM2, and restart application
+      - name: Install dependencies and start application
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            sudo apt-get update
-            sudo npm install -g pm2
             cd ~/app
             npm install
             npm run build
-            pm2 restart all || pm2 start dist/main.js --name "nestjs-app"
+            nohup npm run start:prod &
           EOF
 
