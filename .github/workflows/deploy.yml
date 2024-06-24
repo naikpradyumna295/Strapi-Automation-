@@ -27,6 +27,7 @@ jobs:
       - name: Install dependencies and start application
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            sudo lsof -i :3000 | grep LISTEN | awk '{print $2}' | xargs -r sudo kill -9
             cd ~/app
             npm install
             npm run build
